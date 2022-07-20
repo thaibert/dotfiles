@@ -1,5 +1,6 @@
 #### HOMEBREW FORMULAE ####
 brew "stow"
+brew "antigen" # zsh package manager
 
 brew "gcc"
 brew "llvm"

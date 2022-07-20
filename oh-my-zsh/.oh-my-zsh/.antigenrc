@@ -1,0 +1,20 @@
+source /usr/local/share/antigen/antigen.zsh
+
+antigen use oh-my-zsh
+
+#### THEME ####
+    antigen theme wezm
+
+#### PLUGINS ####
+antigen bundles <<EOBUNDLES
+    git
+    zsh-users/zsh-syntax-highlighting
+    zsh-users/zsh-autosuggestions
+    zsh-users/zsh-completions
+
+    jeffreytse/zsh-vi-mode
+EOBUNDLES
+
+
+antigen apply
+
