@@ -1,0 +1,6 @@
+# macOS stuff
+.DS_Store
+
+# Repo-specifics
+*.lock.json
+
