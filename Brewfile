@@ -1,4 +1,6 @@
 #### HOMEBREW FORMULAE ####
+brew "stow"
+
 brew "gcc"
 brew "llvm"
 brew "go"
