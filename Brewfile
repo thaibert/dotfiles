@@ -6,7 +6,6 @@ brew "gcc"
 brew "llvm"
 brew "go"
 
-brew "openjdk"
 brew "maven"
 brew "gradle"
 

@@ -5,11 +5,12 @@ antigen use oh-my-zsh
 #### THEME ####
     antigen theme wezm
 
+# antigen theme agnoster-light
+
 #### PLUGINS ####
 antigen bundles <<EOBUNDLES
     git
     zsh-users/zsh-syntax-highlighting
-    zsh-users/zsh-autosuggestions
     zsh-users/zsh-completions
 
     jeffreytse/zsh-vi-mode
