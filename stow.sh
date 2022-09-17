@@ -1,2 +1,2 @@
-stow --verbose oh-my-zsh
+stow --verbose --target="$HOME" zsh
 
