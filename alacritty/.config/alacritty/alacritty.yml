@@ -1,0 +1,35 @@
+#
+# Alacritty config file
+# See https://github.com/alacritty/alacritty/blob/master/alacritty.yml for all options
+#
+
+# da_DK macOS keybindings
+key_bindings:
+  - { key: 10,  mods: Alt,        chars: ""    } # alt+dollar
+  - { key: 18,  mods: Alt,        chars: "\xA1" } # alt+1
+  - { key: 19,  mods: Alt,        chars: "“"    } # alt+2
+  - { key: 20,  mods: Alt,        chars: "\xA7" } # alt+3
+  - { key: 21,  mods: Alt,        chars: "\xA3" } # alt+4
+  - { key: 23,  mods: Alt,        chars: "∞"    } # alt+5
+  - { key: 22,  mods: Alt,        chars: "™"    } # alt+6
+  - { key: 26,  mods: Alt,        chars: "\xB6" } # alt+7
+  - { key: 28,  mods: Alt,        chars: "\x5B" } # alt+8
+  - { key: 25,  mods: Alt,        chars: "\x5D" } # alt+9
+  - { key: 24,  mods: Alt,        chars: "\x27" } # alt+´
+  - { key: 42,  mods: Alt,        chars: "\x40" } # alt+' (gives @)
+  - { key: 34,  mods: Alt,        chars: "\x7C" } # alt+i
+  
+  - { key: 10,  mods: Alt|Shift,  chars: "\x27" } # alt+shift+dollar
+  - { key: 18,  mods: Alt|Shift,  chars: "\xAF" } # alt+shift+1
+  - { key: 19,  mods: Alt|Shift,  chars: "”"    } # alt+shift+2
+  - { key: 20,  mods: Alt|Shift,  chars: "\x24" } # alt+shift+3
+  - { key: 21,  mods: Alt|Shift,  chars: "\xA2" } # alt+shift+4
+  - { key: 23,  mods: Alt|Shift,  chars: "‰"    } # alt+shift+5
+  - { key: 22,  mods: Alt|Shift,  chars: "\x98" } # alt+shift+6
+  - { key: 26,  mods: Alt|Shift,  chars: "\x2F" } # alt+shift+7
+  - { key: 28,  mods: Alt|Shift,  chars: "\x7B" } # alt+shift+8
+  - { key: 25,  mods: Alt|Shift,  chars: "\x7D" } # alt+shift+9
+  - { key: 30,  mods: Alt|Shift,  chars: "\x5E" } # alt+shift+^
+  - { key: 49,  mods: Alt|Shift,  chars: "\xBA" } # alt+shift+'
+
+
