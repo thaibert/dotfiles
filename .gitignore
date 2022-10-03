@@ -6,3 +6,5 @@
 
 zsh/.zsh/antigen.zsh
 
+# Allow local-only setup files prepended with a dot
+zsh/.zsh/setup/.*.zsh 

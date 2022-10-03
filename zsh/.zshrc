@@ -7,7 +7,7 @@ source $ZSH/.antigenrc
 # Case-sensitive completion must be off. _ and - will be interchangeable.
 # HYPHEN_INSENSITIVE="true"
 
-for file ("$ZSH_CUSTOM"/*.zsh); do
+for file in "$ZSH_CUSTOM"/*.zsh(DN); do
   source "$file"
 done
 unset file
