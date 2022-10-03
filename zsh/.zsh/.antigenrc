@@ -1,5 +1,4 @@
-source /usr/local/share/antigen/antigen.zsh
-# TODO: parameterise antigen installation away
+source $ZSH/antigen.zsh
 
 antigen use oh-my-zsh
 
@@ -16,7 +15,6 @@ antigen bundles <<EOBUNDLES
 
     jeffreytse/zsh-vi-mode
 EOBUNDLES
-
 
 antigen apply
 

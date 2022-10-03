@@ -4,3 +4,5 @@
 # Repo-specifics
 *.lock.json
 
+zsh/.zsh/antigen.zsh
+
