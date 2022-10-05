@@ -1,0 +1,11 @@
+import:
+  - "C:\\Users\\Jetha\\AppData\\Roaming\\alacritty\\alacritty-base.yml"
+
+font:
+  size: 13
+
+shell:
+  program: "wsl"
+  args:
+    - --cd ~
+
