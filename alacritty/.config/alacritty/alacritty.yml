@@ -3,33 +3,92 @@
 # See https://github.com/alacritty/alacritty/blob/master/alacritty.yml for all options
 #
 
+window:
+  padding:
+    x: 10
+    y: 10
+
+  startup_mode: "Windowed"
+  opacity: 1.0
+
+scrolling:
+  history: 100000
+
+font:
+  size: 17
+  normal:
+    family: "Cascadia Mono"
+    style: "Regular"
+  bold:
+    style: "Bold"
+  italic:
+    style: "Italic"
+
+# When true, bold text is drawn using the bright variant of colors.
+draw_bold_text_with_bright_colors: false
+
+colors:
+  # Default colors
+  primary:
+    foreground: "#000000"
+    background: "#fcfcfc"
+    dim_foreground: "#ff0000"
+    bright_foreground: "#ff00ff"
+  # Allowed values are CellForeground/CellBackground, which reference the
+  # affected cell, or hexadecimal colors like #ff00ff.
+  cursor:
+    text: "#ffffff"
+    cursor: "#616161"
+  # Normal colors
+  normal:
+    black:   "#ffffff"
+    red:     "#cf1021"
+    green:   "#5f966d"
+    yellow:  "#948a00"
+    blue:    "#0127d6"
+    magenta: "#881798"
+    cyan:    "#0c9676"
+    white:   "#4a4a4a"
+  # Bright colors
+  bright:
+    black:   "#2e2e2e"
+    red:     "#e71842"
+    green:   "#0f8c09"
+    yellow:  "#d4d93b"
+    blue:    "#3265d6"
+    magenta: "#b4009e"
+    cyan:    "#01a196"
+    white:   "#6b6b6b"
+  selection:
+    text: "CellForeground"
+    background: "#ffffc8"
+
 # da_DK macOS keybindings
 key_bindings:
-  - { key: 10,  mods: Alt,        chars: ""    } # alt+dollar
-  - { key: 18,  mods: Alt,        chars: "\xA1" } # alt+1
-  - { key: 19,  mods: Alt,        chars: "“"    } # alt+2
-  - { key: 20,  mods: Alt,        chars: "\xA7" } # alt+3
-  - { key: 21,  mods: Alt,        chars: "\xA3" } # alt+4
-  - { key: 23,  mods: Alt,        chars: "∞"    } # alt+5
-  - { key: 22,  mods: Alt,        chars: "™"    } # alt+6
-  - { key: 26,  mods: Alt,        chars: "\xB6" } # alt+7
-  - { key: 28,  mods: Alt,        chars: "\x5B" } # alt+8
-  - { key: 25,  mods: Alt,        chars: "\x5D" } # alt+9
-  - { key: 24,  mods: Alt,        chars: "\x27" } # alt+´
-  - { key: 42,  mods: Alt,        chars: "\x40" } # alt+' (gives @)
-  - { key: 34,  mods: Alt,        chars: "\x7C" } # alt+i
+  - { key: 10,  mods: "Alt",        chars: ""    } # alt+dollar
+  - { key: 18,  mods: "Alt",        chars: "\xA1" } # alt+1
+  - { key: 19,  mods: "Alt",        chars: "“"    } # alt+2
+  - { key: 20,  mods: "Alt",        chars: "\xA7" } # alt+3
+  - { key: 21,  mods: "Alt",        chars: "\xA3" } # alt+4
+  - { key: 23,  mods: "Alt",        chars: "∞"    } # alt+5
+  - { key: 22,  mods: "Alt",        chars: "™"    } # alt+6
+  - { key: 26,  mods: "Alt",        chars: "\xB6" } # alt+7
+  - { key: 28,  mods: "Alt",        chars: "\x5B" } # alt+8
+  - { key: 25,  mods: "Alt",        chars: "\x5D" } # alt+9
+  - { key: 24,  mods: "Alt",        chars: "\x27" } # alt+´
+  - { key: 42,  mods: "Alt",        chars: "\x40" } # alt+'
+  - { key: 34,  mods: "Alt",        chars: "\x7C" } # alt+i
   
-  - { key: 10,  mods: Alt|Shift,  chars: "\x27" } # alt+shift+dollar
-  - { key: 18,  mods: Alt|Shift,  chars: "\xAF" } # alt+shift+1
-  - { key: 19,  mods: Alt|Shift,  chars: "”"    } # alt+shift+2
-  - { key: 20,  mods: Alt|Shift,  chars: "\x24" } # alt+shift+3
-  - { key: 21,  mods: Alt|Shift,  chars: "\xA2" } # alt+shift+4
-  - { key: 23,  mods: Alt|Shift,  chars: "‰"    } # alt+shift+5
-  - { key: 22,  mods: Alt|Shift,  chars: "\x98" } # alt+shift+6
-  - { key: 26,  mods: Alt|Shift,  chars: "\x2F" } # alt+shift+7
-  - { key: 28,  mods: Alt|Shift,  chars: "\x7B" } # alt+shift+8
-  - { key: 25,  mods: Alt|Shift,  chars: "\x7D" } # alt+shift+9
-  - { key: 30,  mods: Alt|Shift,  chars: "\x5E" } # alt+shift+^
-  - { key: 49,  mods: Alt|Shift,  chars: "\xBA" } # alt+shift+'
-
+  - { key: 10,  mods: "Alt|Shift",  chars: "\x27" } # alt+shift+dollar
+  - { key: 18,  mods: "Alt|Shift",  chars: "\xAF" } # alt+shift+1
+  - { key: 19,  mods: "Alt|Shift",  chars: "”"    } # alt+shift+2
+  - { key: 20,  mods: "Alt|Shift",  chars: "\x24" } # alt+shift+3
+  - { key: 21,  mods: "Alt|Shift",  chars: "\xA2" } # alt+shift+4
+  - { key: 23,  mods: "Alt|Shift",  chars: "‰"    } # alt+shift+5
+  - { key: 22,  mods: "Alt|Shift",  chars: "\x98" } # alt+shift+6
+  - { key: 26,  mods: "Alt|Shift",  chars: "\x2F" } # alt+shift+7
+  - { key: 28,  mods: "Alt|Shift",  chars: "\x7B" } # alt+shift+8
+  - { key: 25,  mods: "Alt|Shift",  chars: "\x7D" } # alt+shift+9
+  - { key: 30,  mods: "Alt|Shift",  chars: "\x5E" } # alt+shift+^
+  - { key: 49,  mods: "Alt|Shift",  chars: "\xBA" } # alt+shift+'
 
