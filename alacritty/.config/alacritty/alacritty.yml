@@ -9,6 +9,9 @@ window:
     y: 10
 
   startup_mode: "Windowed"
+  dimensions:
+    columns: 120
+    lines: 40
   opacity: 1.0
 
 scrolling:
@@ -92,3 +95,4 @@ key_bindings:
   - { key: 30,  mods: "Alt|Shift",  chars: "\x5E" } # alt+shift+^
   - { key: 49,  mods: "Alt|Shift",  chars: "\xBA" } # alt+shift+'
 
+  - { key: "Space", mods: "Control", chars: "\x00" }
