@@ -89,7 +89,7 @@ key_bindings:
   - { key: 21,  mods: "Alt|Shift",  chars: "\xA2" } # alt+shift+4
   - { key: 23,  mods: "Alt|Shift",  chars: "‰"    } # alt+shift+5
   - { key: 22,  mods: "Alt|Shift",  chars: "\x98" } # alt+shift+6
-  - { key: 26,  mods: "Alt|Shift",  chars: "\x2F" } # alt+shift+7
+  - { key: 26,  mods: "Alt|Shift",  chars: "\x5C" } # alt+shift+7
   - { key: 28,  mods: "Alt|Shift",  chars: "\x7B" } # alt+shift+8
   - { key: 25,  mods: "Alt|Shift",  chars: "\x7D" } # alt+shift+9
   - { key: 30,  mods: "Alt|Shift",  chars: "\x5E" } # alt+shift+^
