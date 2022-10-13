@@ -30,4 +30,6 @@ set scrolloff=10
 set hlsearch   " Highlight all occurrences when searching
 set ignorecase " Case-insensitive search
 set smartcase  " ... but turn on case-sensitive search when searching with any capital letters
+" below: temporarily remove highlighting of searched term in command mode with Enter
+nnoremap <CR> :nohlsearch<CR><CR>
 
