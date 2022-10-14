@@ -2,6 +2,10 @@ set relativenumber " Enable line numbering
 set number         " ... and have the cursor's line show absolute
 syntax on
 
+set tabstop=2
+set shiftwidth=0 " Inherit tabstop
+set smartindent
+
 
 function GetLineEnding()
   if ( &fileformat == "unix" )
