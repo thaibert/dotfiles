@@ -1,72 +1,7 @@
-#
-# Alacritty config file
-# See https://github.com/alacritty/alacritty/blob/master/alacritty.yml for all options
-#
+import:
+  - "~/.config/alacritty/alacritty-base.yml"
 
-window:
-  padding:
-    x: 10
-    y: 10
-
-  startup_mode: "Windowed"
-  dimensions:
-    columns: 120
-    lines: 40
-  opacity: 1.0
-
-scrolling:
-  history: 100000
-
-font:
-  size: 17
-  normal:
-    family: "Cascadia Mono"
-    style: "Regular"
-  bold:
-    style: "Bold"
-  italic:
-    style: "Italic"
-
-# When true, bold text is drawn using the bright variant of colors.
-draw_bold_text_with_bright_colors: false
-
-colors:
-  # Default colors
-  primary:
-    foreground: "#000000"
-    background: "#fcfcfc"
-    dim_foreground: "#ff0000"
-    bright_foreground: "#ff00ff"
-  # Allowed values are CellForeground/CellBackground, which reference the
-  # affected cell, or hexadecimal colors like #ff00ff.
-  cursor:
-    text: "#ffffff"
-    cursor: "#616161"
-  # Normal colors
-  normal:
-    black:   "#ffffff"
-    red:     "#cf1021"
-    green:   "#5f966d"
-    yellow:  "#948a00"
-    blue:    "#0127d6"
-    magenta: "#881798"
-    cyan:    "#0c9676"
-    white:   "#4a4a4a"
-  # Bright colors
-  bright:
-    black:   "#2e2e2e"
-    red:     "#e71842"
-    green:   "#0f8c09"
-    yellow:  "#d4d93b"
-    blue:    "#3265d6"
-    magenta: "#b4009e"
-    cyan:    "#01a196"
-    white:   "#6b6b6b"
-  selection:
-    text: "CellForeground"
-    background: "#ffffc8"
-
-# da_DK macOS keybindings
+#da_DK macOS keybindings
 key_bindings:
   - { key: 10,  mods: "Alt",        chars: ""    } # alt+dollar
   - { key: 18,  mods: "Alt",        chars: "\xA1" } # alt+1
@@ -81,7 +16,7 @@ key_bindings:
   - { key: 24,  mods: "Alt",        chars: "\x27" } # alt+´
   - { key: 42,  mods: "Alt",        chars: "\x40" } # alt+'
   - { key: 34,  mods: "Alt",        chars: "\x7C" } # alt+i
-  
+ 
   - { key: 10,  mods: "Alt|Shift",  chars: "\x27" } # alt+shift+dollar
   - { key: 18,  mods: "Alt|Shift",  chars: "\xAF" } # alt+shift+1
   - { key: 19,  mods: "Alt|Shift",  chars: "”"    } # alt+shift+2
@@ -96,3 +31,4 @@ key_bindings:
   - { key: 49,  mods: "Alt|Shift",  chars: "\xBA" } # alt+shift+'
 
   - { key: "Space", mods: "Control", chars: "\x00" }
+
