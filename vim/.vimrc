@@ -2,8 +2,10 @@ set relativenumber " Enable line numbering
 set number         " ... and have the cursor's line show absolute
 syntax on
 
-set tabstop=2
-set shiftwidth=0 " Inherit tabstop
+set tabstop=2       " Base tab width
+set shiftwidth=0    " Inherit tabstop
+set expandtab       " Place spaces instead when tabbing
+set softtabstop=-1  " Delete $shiftwidth spaces at a time when backspacing
 set smartindent
 
 
