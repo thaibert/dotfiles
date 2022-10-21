@@ -52,9 +52,8 @@ case "$_OS_TYPE" in
 
     _stdout "Setting up zsh"
     stow --no-folding --verbose --target="$HOME" zsh
-    echo "$ZSH"
     _antigen_zsh=$(find $(brew --prefix)/Cellar/antigen | grep antigen.zsh)
-    ln -s -f -v "$_antigen_zsh" "$ZSH/antigen.zsh"
+    ln -s -f -v "$_antigen_zsh" "$HOME/.zsh/antigen.zsh"
 
     _stdout "Setting up vim"
 		stow --no-folding --verbose --target="$HOME" vim
@@ -66,15 +65,31 @@ case "$_OS_TYPE" in
     _stdout "Setting up alacritty"
 		stow --no-folding --verbose --target="$HOME" alacritty
     ln -s -f -v "$HOME/.config/alacritty/alacritty-mac.yml" "$HOME/.config/alacritty/alacritty.yml"
-
-    _stdout "Done"
   };;
-  #  ln --symbolic /usr/share/antigen/antigen.zsh $ZSH/antigen.zsh  # debian
+  wsl*) {
+    # TODO: dependencies
+
+    _stdout "Setting up zsh"
+    stow --no-folding --verbose --target="$HOME" zsh
+    _antigen_zsh="$HOME/.antigen.vendored.zsh" # Debian's zsh-antigen package is broken, so vendor it in manually.
+    ln -s -f -v "$_antigen_zsh" "$HOME/.zsh/antigen.zsh"
+
+    _stdout "Setting up vim"
+		stow --no-folding --verbose --target="$HOME" vim
+
+    _stdout "Setting up tmux"
+		stow --no-folding --verbose --target="$HOME" tmux
+    ln -s -f -v "$HOME/.tmux/paste-wsl.sh" "$HOME/.tmux/paste.sh"
+
+    _stdout "Setting up alacritty"
+		stow --no-folding --verbose --target="$HOME" alacritty
+    ln -s -f -v "$HOME/.config/alacritty/alacritty-wsl.yml" "$HOME/.config/alacritty/alacritty.yml"
+  };;
   *) {
     _error_with_message "Prerequisite setup not handled for OS: $_OS_TYPE"
   }
 esac
-
+_stdout "Done"
 
 ## Verify correct installation
 _PREPEND="[verification]"
@@ -85,16 +100,16 @@ _fail_verification() {
   _has_failed_verification=1
 }
 
-if ! [[ -f "$ZSH/antigen.zsh" ]]; then
+if ! [ -f "$ZSH/antigen.zsh" ]; then
   _stderr "zsh: antigen script missing"
   _fail_verification
 fi
-if ! [[ -f "$HOME/.tmux/paste.sh" ]]; then
+if ! [ -f "$HOME/.tmux/paste.sh" ]; then
   _stderr "tmux: paste script missing"
   _fail_verification
 fi
 
-if [[ $_has_failed_verification != 0 ]]; then
+if [ "$_has_failed_verification" != 0 ]; then
   _error_with_message "Verification failed"
 else
   _stdout "Environment install verified"
