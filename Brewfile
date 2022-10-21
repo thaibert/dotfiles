@@ -22,7 +22,6 @@ brew "ffmpeg"
 brew "imagemagick"
 brew "youtube-dl"
 brew "tmux"
-brew "alacritty"
 brew "tree"
 brew "watch"
 brew "pv"
@@ -33,7 +32,7 @@ brew "telnet"
 brew "wget"
 
 #### HOMEBREW CASKS ####
-
+cask "alacritty"
 cask "android-file-transfer"
 cask "audacity"
 cask "authy"
