@@ -67,11 +67,18 @@ case "$_OS_TYPE" in
     ln -s -f -v "$HOME/.config/alacritty/alacritty-mac.yml" "$HOME/.config/alacritty/alacritty.yml"
   };;
   wsl*) {
-    # TODO: dependencies
+    sudo apt-get install -y stow
+    wget -q -O "$HOME/.antigen.vendored.zsh" "https://raw.githubusercontent.com/zsh-users/antigen/develop/bin/antigen.zsh"  # TODO: Debian's zsh-antigen package is broken, so vendor it in manually
+    mkdir -p "$HOME/.config/alacritty"
+    mkdir "$HOME/.tmux" 2>/dev/null
+    mkdir "$HOME/.zsh" 2>/dev/null
+    if [ -f "$HOME/.zshrc" ]; then
+      mv "$HOME/.zshrc" "$HOME/.old_zshrc"
+    fi
 
     _stdout "Setting up zsh"
     stow --no-folding --verbose --target="$HOME" zsh
-    _antigen_zsh="$HOME/.antigen.vendored.zsh" # Debian's zsh-antigen package is broken, so vendor it in manually.
+    _antigen_zsh="$HOME/.antigen.vendored.zsh"
     ln -s -f -v "$_antigen_zsh" "$HOME/.zsh/antigen.zsh"
 
     _stdout "Setting up vim"
@@ -100,7 +107,7 @@ _fail_verification() {
   _has_failed_verification=1
 }
 
-if ! [ -f "$ZSH/antigen.zsh" ]; then
+if ! [ -f "$HOME/.zsh/antigen.zsh" ]; then
   _stderr "zsh: antigen script missing"
   _fail_verification
 fi
