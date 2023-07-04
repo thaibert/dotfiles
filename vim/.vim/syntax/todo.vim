@@ -4,9 +4,10 @@
 "
 
 " Keywords
-syn keyword fullHighlight TODO
-
+syn keyword stillTodo TODO
+syn match markCompleted "DONE.*$"
 
 " Highlighting
-hi def link fullHighlight Comment
+hi def link stillTodo Comment
+hi def link markCompleted Constant
 
