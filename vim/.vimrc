@@ -7,6 +7,9 @@ set shiftwidth=0    " Inherit tabstop
 set expandtab       " Place spaces instead when tabbing
 set softtabstop=-1  " Delete $shiftwidth spaces at a time when backspacing
 set smartindent
+set list              " Set up for displaying tabs explicitly
+set listchars=tab:>-  " Set tab character display
+" If the need occurs for replacing tabs in a file with spaces, use :retab
 
 
 function GetLineEnding()
@@ -38,6 +41,12 @@ set ignorecase " Case-insensitive search
 set smartcase  " ... but turn on case-sensitive search when searching with any capital letters
 " below: temporarily remove highlighting of searched term in command mode with Enter
 nnoremap <CR> :nohlsearch<CR><CR>
+
+" Filetype-specific setup
+filetype on
+filetype plugin on
+filetype indent on " file type based indentation
+autocmd FileType make set noexpandtab shiftwidth=4 softtabstop=0
 
 
 " Plugin section
