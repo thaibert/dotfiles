@@ -1,0 +1,23 @@
+#!/usr/bin/env zsh
+
+max_image_length=30
+
+docker container ps --format "json" |
+  MAX_LEN="${max_image_length}" jq '
+    (env.MAX_LEN | tonumber) as $MAX_LEN
+    | to_entries
+    | map({
+      key: .key,
+      value:
+      (if (.key == "Image") and ((.value | length) > $MAX_LEN)
+          then "..." + .value[-$MAX_LEN:] 
+          else .value
+        end)
+      }) 
+    | from_entries
+  ' |
+  jq --slurp '.[] | [.ID, .Names, .Status, .Image]' |
+  jq --slurp '. | [["ID", "CONTAINER NAME", "STATUS", "IMAGE"]] + .' |
+  jq --raw-output '.[] | @tsv' | 
+  column -t -s $'\t' |
+  sort --key="2"  # Columns are indexed as (1, 2, ...), so sort on container_name
