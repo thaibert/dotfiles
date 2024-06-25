@@ -16,8 +16,11 @@ docker container ps --format "json" |
       }) 
     | from_entries
   ' |
-  jq --slurp '.[] | [.ID, .Names, .Status, .Image]' |
-  jq --slurp '. | [["ID", "CONTAINER NAME", "STATUS", "IMAGE"]] + .' |
+  jq --slurp '.[] | [.ID, .Names, .Status, .Image, .CreatedAt]' |
+  jq --slurp '. | [["ID", "CONTAINER NAME", "STATUS", "IMAGE", "__CREATED_AT_ISO8601_ISH"]] + .' |
   jq --raw-output '.[] | @tsv' | 
-  column -t -s $'\t' |
-  sort --key="2"  # Columns are indexed as (1, 2, ...), so sort on container_name
+    # Note: Columns in `sort` and `cut` are 1-indexed
+  sort --key="2" |  # Sort on "CONTAINER NAME" first
+  sort --key="5" --stable |  # .. then stably on "__CREATED_AT_ISO8601_ISH"
+  cut -d $'\t' -f-4 |  # cut out the "__CREATED_AT_ISO8601_ISH" column
+  column -t -s $'\t'
