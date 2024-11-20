@@ -1,0 +1,64 @@
+[colors]
+draw_bold_text_with_bright_colors = false
+
+[colors.bright]
+black = "#2e2e2e"
+blue = "#3265d6"
+cyan = "#01a196"
+green = "#0f8c09"
+magenta = "#b4009e"
+red = "#e71842"
+white = "#6b6b6b"
+yellow = "#d4d93b"
+
+[colors.cursor]
+cursor = "#616161"
+text = "#ffffff"
+
+[colors.normal]
+black = "#ffffff"
+blue = "#0127d6"
+cyan = "#0c9676"
+green = "#5f966d"
+magenta = "#881798"
+red = "#cf1021"
+white = "#4a4a4a"
+yellow = "#948a00"
+
+[colors.primary]
+background = "#fcfcfc"
+bright_foreground = "#ff00ff"
+dim_foreground = "#ff0000"
+foreground = "#000000"
+
+[colors.selection]
+background = "#ffffc8"
+text = "CellForeground"
+
+[font]
+size = 17
+
+[font.bold]
+style = "Bold"
+
+[font.italic]
+style = "Italic"
+
+[font.normal]
+family = "Cascadia Mono"
+style = "Regular"
+
+[scrolling]
+history = 100000
+
+[window]
+opacity = 1.0
+startup_mode = "Windowed"
+
+[window.dimensions]
+columns = 120
+lines = 40
+
+[window.padding]
+x = 10
+y = 10

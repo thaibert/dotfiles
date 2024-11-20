@@ -1,0 +1,5 @@
+[general]
+import = ["/home/thaibert/.config/alacritty/theme.toml"]
+
+[font]
+size = 13

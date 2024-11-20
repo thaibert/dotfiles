@@ -23,6 +23,9 @@ case "${os}" in
     if (grep --quiet --ignore-case "microsoft" /proc/version); then
       machine="wsl"
     fi 
+    if (grep --ignore-case "^name=" /etc/os-release | grep --quiet --ignore-case "fedora"); then
+      machine="linux-fedora"
+    fi
   } ;;
   Darwin*) {
     machine="mac"
@@ -91,6 +94,32 @@ case "$_OS_TYPE" in
     _stdout "Setting up alacritty"
 		stow --no-folding --verbose --target="$HOME" alacritty
     ln -s -f -v "$HOME/.config/alacritty/alacritty-wsl.yml" "$HOME/.config/alacritty/alacritty.yml"
+  };;
+  linux-fedora*) {
+    sudo dnf install -y stow
+
+    wget -q -O "$HOME/.antigen.vendored.zsh" "https://raw.githubusercontent.com/zsh-users/antigen/develop/bin/antigen.zsh"  # TODO: dnf does not have an antigen package, so vendor it in manually
+    mkdir -p "$HOME/.config/alacritty"
+    mkdir "$HOME/.tmux" 2>/dev/null
+    mkdir "$HOME/.zsh" 2>/dev/null
+    if [ -f "$HOME/.zshrc" ]; then
+      mv "$HOME/.zshrc" "$HOME/.old_zshrc"
+    fi
+
+    _stdout "Setting up zsh"
+    stow --no-folding --verbose --target="$HOME" zsh
+    _antigen_zsh="$HOME/.antigen.vendored.zsh"
+    ln -s -f -v "$_antigen_zsh" "$HOME/.zsh/antigen.zsh"
+
+    stow --no-folding --verbose --target="$HOME" vim
+
+    stow --no-folding --verbose --target="$HOME" tmux
+    sudo dnf install -y xsel
+    ln -s -f -v "$HOME/.tmux/paste-linux.sh" "$HOME/.tmux/paste.sh"
+
+    sudo dnf install -y alacritty
+    stow --no-folding --verbose --target="$HOME" alacritty
+    ln -s -f -v "$HOME/.config/alacritty/alacritty-linux.toml" "$HOME/.config/alacritty/alacritty.toml"
   };;
   *) {
     _error_with_message "Prerequisite setup not handled for OS: $_OS_TYPE"
