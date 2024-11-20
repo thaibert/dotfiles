@@ -59,14 +59,14 @@ case "$_OS_TYPE" in
     ln -s -f -v "$_antigen_zsh" "$HOME/.zsh/antigen.zsh"
 
     _stdout "Setting up vim"
-		stow --no-folding --verbose --target="$HOME" vim
+    stow --no-folding --verbose --target="$HOME" vim
 
     _stdout "Setting up tmux"
-		stow --no-folding --verbose --target="$HOME" tmux
+    stow --no-folding --verbose --target="$HOME" tmux
     ln -s -f -v "$HOME/.tmux/paste-mac.sh" "$HOME/.tmux/paste.sh"
 
     _stdout "Setting up alacritty"
-		stow --no-folding --verbose --target="$HOME" alacritty
+    stow --no-folding --verbose --target="$HOME" alacritty
     ln -s -f -v "$HOME/.config/alacritty/alacritty-mac.yml" "$HOME/.config/alacritty/alacritty.yml"
   };;
   wsl*) {
@@ -85,15 +85,16 @@ case "$_OS_TYPE" in
     ln -s -f -v "$_antigen_zsh" "$HOME/.zsh/antigen.zsh"
 
     _stdout "Setting up vim"
-		stow --no-folding --verbose --target="$HOME" vim
+    stow --no-folding --verbose --target="$HOME" vim
 
     _stdout "Setting up tmux"
-		stow --no-folding --verbose --target="$HOME" tmux
+    stow --no-folding --verbose --target="$HOME" tmux
     ln -s -f -v "$HOME/.tmux/paste-wsl.sh" "$HOME/.tmux/paste.sh"
 
     _stdout "Setting up alacritty"
-		stow --no-folding --verbose --target="$HOME" alacritty
+    stow --no-folding --verbose --target="$HOME" alacritty
     ln -s -f -v "$HOME/.config/alacritty/alacritty-wsl.yml" "$HOME/.config/alacritty/alacritty.yml"
+    # TODO: alacritty must be installed manually
   };;
   linux-fedora*) {
     sudo dnf install -y stow
