@@ -1,6 +1,17 @@
 #!/bin/bash
+script_dir="$(dirname "$BASH_SOURCE")"
 
-_PREPEND="[init]"
+has_color_support="" \
+  && test -t 1 \
+  && test -n "$(tput colors)" \
+  && test $(tput colors) -ge 8 \
+  && has_color_support="definitely"
+normal="${has_color_support:+$(tput sgr0)}"
+red="${has_color_support:+$(tput setaf 1)}"
+green="${has_color_support:+$(tput setaf 2)}"
+blue="${has_color_support:+$(tput setaf 4)}"
+
+_PREPEND="[${blue}init${normal}]"
 _stdout() {
   echo "$_PREPEND $1"
 }
@@ -10,7 +21,7 @@ _stderr() {
 }
 
 _error_with_message() {
-  _stderr "Error during environment setup: $1"
+  _stderr "${red}Error during environment setup: $1${normal}"
   exit 1
 }
 
@@ -40,7 +51,7 @@ _stdout "OS type determined to be: $_OS_TYPE"
 
 
 ## Installation and setup
-_PREPEND="[install]"
+_PREPEND="[${blue}install${normal}]"
 _stdout "Starting installation"
 case "$_OS_TYPE" in
   mac*) {
@@ -54,19 +65,19 @@ case "$_OS_TYPE" in
     brew bundle install --no-lock
 
     _stdout "Setting up zsh"
-    stow --no-folding --verbose --target="$HOME" zsh
+    stow --no-folding --verbose --dir="$script_dir" --target="$HOME" zsh
     _antigen_zsh=$(find $(brew --prefix)/Cellar/antigen | grep antigen.zsh)
     ln -s -f -v "$_antigen_zsh" "$HOME/.zsh/antigen.zsh"
 
     _stdout "Setting up vim"
-    stow --no-folding --verbose --target="$HOME" vim
+    stow --no-folding --verbose --dir="$script_dir" --target="$HOME" vim
 
     _stdout "Setting up tmux"
-    stow --no-folding --verbose --target="$HOME" tmux
+    stow --no-folding --verbose --dir="$script_dir" --target="$HOME" tmux
     ln -s -f -v "$HOME/.tmux/paste-mac.sh" "$HOME/.tmux/paste.sh"
 
     _stdout "Setting up alacritty"
-    stow --no-folding --verbose --target="$HOME" alacritty
+    stow --no-folding --verbose --dir="$script_dir" --target="$HOME" alacritty
     ln -s -f -v "$HOME/.config/alacritty/alacritty-mac.yml" "$HOME/.config/alacritty/alacritty.yml"
   };;
   wsl*) {
@@ -80,19 +91,19 @@ case "$_OS_TYPE" in
     fi
 
     _stdout "Setting up zsh"
-    stow --no-folding --verbose --target="$HOME" zsh
+    stow --no-folding --verbose --dir="$script_dir" --target="$HOME" zsh
     _antigen_zsh="$HOME/.antigen.vendored.zsh"
     ln -s -f -v "$_antigen_zsh" "$HOME/.zsh/antigen.zsh"
 
     _stdout "Setting up vim"
-    stow --no-folding --verbose --target="$HOME" vim
+    stow --no-folding --verbose --dir="$script_dir" --target="$HOME" vim
 
     _stdout "Setting up tmux"
-    stow --no-folding --verbose --target="$HOME" tmux
+    stow --no-folding --verbose --dir="$script_dir" --target="$HOME" tmux
     ln -s -f -v "$HOME/.tmux/paste-wsl.sh" "$HOME/.tmux/paste.sh"
 
     _stdout "Setting up alacritty"
-    stow --no-folding --verbose --target="$HOME" alacritty
+    stow --no-folding --verbose --dir="$script_dir" --target="$HOME" alacritty
     ln -s -f -v "$HOME/.config/alacritty/alacritty-wsl.yml" "$HOME/.config/alacritty/alacritty.yml"
     # TODO: alacritty must be installed manually
   };;
@@ -107,19 +118,22 @@ case "$_OS_TYPE" in
       mv "$HOME/.zshrc" "$HOME/.old_zshrc"
     fi
 
-    _stdout "Setting up zsh"
-    stow --no-folding --verbose --target="$HOME" zsh
+    _stdout "zsh"
+    stow --no-folding --verbose --dir="$script_dir" --target="$HOME" zsh
     _antigen_zsh="$HOME/.antigen.vendored.zsh"
     ln -s -f -v "$_antigen_zsh" "$HOME/.zsh/antigen.zsh"
 
-    stow --no-folding --verbose --target="$HOME" vim
+    _stdout "vim"
+    stow --no-folding --verbose --dir="$script_dir" --target="$HOME" vim
 
-    stow --no-folding --verbose --target="$HOME" tmux
+    _stdout "tmux"
+    stow --no-folding --verbose --dir="$script_dir" --target="$HOME" tmux
     sudo dnf install -y xsel
     ln -s -f -v "$HOME/.tmux/paste-linux.sh" "$HOME/.tmux/paste.sh"
 
+    _stdout "alacritty"
     sudo dnf install -y alacritty
-    stow --no-folding --verbose --target="$HOME" alacritty
+    stow --no-folding --verbose --dir="$script_dir" --target="$HOME" alacritty
     ln -s -f -v "$HOME/.config/alacritty/alacritty-linux.toml" "$HOME/.config/alacritty/alacritty.toml"
   };;
   *) {
@@ -129,7 +143,7 @@ esac
 _stdout "Done"
 
 ## Verify correct installation
-_PREPEND="[verification]"
+_PREPEND="[${green}verification${normal}]"
 _stdout "Verifying environment install"
 
 _has_failed_verification=0
