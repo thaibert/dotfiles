@@ -2,21 +2,13 @@
 
 max_image_length=30
 
-pipe_name="$(mktemp --dry-run)"
-mkfifo "${pipe_name}"
-exec {throwaway}<>${pipe_name}
-exec {fdout}>${pipe_name}
-exec {fdin}<${pipe_name}
-exec {throwaway}>&-
-
-docker container ps --format "json" |
-  jq \
+docker container ps --format "json" | (
+jq \
     --raw-output \
     --null-input \
     --arg _max_len "${max_image_length}" \
     --from-file /dev/fd/3 \
-    3<<"EOF" \
-    >&${fdout}
+    3<<"EOF"
 # begin(EOF)
   ($_max_len | tonumber) as $MAX_LEN
   | [inputs 
@@ -35,6 +27,7 @@ docker container ps --format "json" |
   ]
   | sort_by(.ID)
   | sort_by(.CreatedAt)
+  | if (. | length == 0) then ["-"] else . end
   | [
       { # Pretty-printed column name mapping :-)
         ID:        "ID",
@@ -47,13 +40,11 @@ docker container ps --format "json" |
       .[]
   ]
   | .[]
-  | [.ID, .Names, .Status, .Image]
+  |
+    if (. | type == "string") then [.] else null end //
+    [.ID, .Names, .Status, .Image]
   | @tsv
 # end(EOF)
 EOF
-exec {fdout}>&-
+) | column -t -s $'\t'
 
-cat <&$fdin | column -t -s $'\t'
-exec {fdin}>&-
-
-rm "${pipe_name}"
