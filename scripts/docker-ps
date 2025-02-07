@@ -1,41 +1,59 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 
 max_image_length=30
 
-
+pipe_name="$(mktemp --dry-run)"
+mkfifo "${pipe_name}"
+exec {throwaway}<>${pipe_name}
+exec {fdout}>${pipe_name}
+exec {fdin}<${pipe_name}
+exec {throwaway}>&-
 
 docker container ps --format "json" |
-  jq --slurp --raw-output --arg _max_len "${max_image_length}" --from-file /dev/fd/3 3<<"EOF"
-    ($_max_len | tonumber) as $MAX_LEN
-    | .[]
+  jq \
+    --raw-output \
+    --null-input \
+    --arg _max_len "${max_image_length}" \
+    --from-file /dev/fd/3 \
+    3<<"EOF" \
+    >&${fdout}
+# begin(EOF)
+  ($_max_len | tonumber) as $MAX_LEN
+  | [inputs 
     | to_entries
-    | map({
-      key: .key,
-      value:
-      (if (.key == "Image") and ((.value | length) > $MAX_LEN)
-          then "..." + .value[-$MAX_LEN:]
-          else .value
-        end)
-      })
+    | map(
+        if (.key == "Image") then .+{
+          value:
+            (if (.value | length > $MAX_LEN)
+              then "..." + .value[-$MAX_LEN:]
+              else .value
+            end)
+        } else null end //
+        .
+     )
     | from_entries
-    | [.ID, .Names]
-    #| ["ID", "NAME"]
-   # | sort_by(.ID)
-    # | @tsv
-    
-
+  ]
+  | sort_by(.ID)
+  | sort_by(.CreatedAt)
+  | [
+      { # Pretty-printed column name mapping :-)
+        ID:        "ID",
+        Names:     "NAMES",
+        Status:    "STATUS",
+        Image:     "IMAGE",
+        Ports:     "PORTS",
+        CreatedAt: "CREATED AT",
+      },
+      .[]
+  ]
+  | .[]
+  | [.ID, .Names, .Status, .Image]
+  | @tsv
+# end(EOF)
 EOF
+exec {fdout}>&-
 
+cat <&$fdin | column -t -s $'\t'
+exec {fdin}>&-
 
-
-
-
-# \
-#   | jq --slurp '.[] | [.ID, .Names, .Status, .Image, .Ports, (.CreatedAt | split(" ") | join("_"))]' \
-#   | jq --slurp '. | [["ID", "CONTAINER NAME", "STATUS", "IMAGE", "PORTS", "__CREATED_AT_ISO8601_ISH"]] + .' \
-#   | jq --raw-output '.[] | @tsv' \
-#   | sort --key="2" |  # Sort on "CONTAINER NAME" first \
-#   | sort --key="5" --stable |  # .. then stably on "__ CREATED_AT_ISO8601_ISH" \
-#   | cut -d $'\t' -f-5 |  # cut out the "__CREATED_AT_I SO8601_ISH" column
-#   | column -t -s $'\t'
-
+rm "${pipe_name}"
