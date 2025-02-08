@@ -21,6 +21,18 @@ jq \
               else .value
             end)
         } else null end //
+        if (.key == "Ports") then .+{
+          # This ignores IPv4 vs IPv6-ness and TCP vs UDP.
+          # It should be fine for an overview.
+          value: .value
+            | split(", ")
+            | map(.
+              | capture("(?<ip>.+):(?<host>[0-9]+)->(?<container>[0-9]+)")
+              | .host + ":" + .container
+            )
+            | unique
+            | join(",")
+        } else null end //
         .
      )
     | from_entries
