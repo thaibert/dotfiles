@@ -25,23 +25,29 @@ jq \
      )
     | from_entries
   ]
-  | sort_by(.ID)
-  | sort_by(.CreatedAt)
+  | sort_by(.CreatedAt, .ID)
   | if (. | length == 0) then ["-"] else . end
   | [
       { # Pretty-printed column name mapping :-)
-        ID:        "ID",
-        Names:     "NAMES",
-        Status:    "STATUS",
-        Image:     "IMAGE",
-        Ports:     "PORTS",
-        CreatedAt: "CREATED AT",
+        Command:      "COMMAND",
+        CreatedAt:    "CREATED AT",
+        ID:           "ID",
+        Image:        "IMAGE",
+        Labels:       "LABELS",
+        LocalVolumes: "LOCAL VOLUMES",
+        Mounts:       "MOUNTS",
+        Names:        "NAMES",
+        Networks:     "NETWORKS",
+        Ports:        "PORTS",
+        RunningFor:   "RUNNING FOR",
+        Size:         "SIZE",
+        State:        "STATE",
+        Status:       "STATUS",
       },
       .[]
   ]
   | .[]
-  |
-    if (. | type == "string") then [.] else null end //
+  | if (. | type == "string") then [.] else null end //
     [.ID, .Names, .Status, .Image]
   | @tsv
 # end(EOF)
