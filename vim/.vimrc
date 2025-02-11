@@ -62,18 +62,20 @@ if empty(glob(data_dir . '/autoload/plug.vim'))
   autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 call plug#begin()
-  Plug 'yuttie/comfortable-motion.vim'
+"  Plug 'yuttie/comfortable-motion.vim'
   Plug 'inkarkat/vim-ingo-library'
   Plug 'inkarkat/vim-ShowTrailingWhitespace'
 call plug#end()
 
-let g:comfortable_motion_friction = 80.0
-let g:comfortable_motion_air_drag = 2.0
-let g:comfortable_motion_no_default_key_mappings = 1
-let g:comfortable_motion_impulse_multiplier = 1
-nnoremap <silent> <C-d> :call comfortable_motion#flick(g:comfortable_motion_impulse_multiplier * winheight(0) * 2)<CR>
-nnoremap <silent> <C-u> :call comfortable_motion#flick(g:comfortable_motion_impulse_multiplier * winheight(0) * -2)<CR>
-nnoremap <silent> <C-f> :call comfortable_motion#flick(g:comfortable_motion_impulse_multiplier * winheight(0) * 4)<CR>
-nnoremap <silent> <C-b> :call comfortable_motion#flick(g:comfortable_motion_impulse_multiplier * winheight(0) * -4)<CR>
+
+" comfortable-motion.vim config
+"let g:comfortable_motion_friction = 80.0
+"let g:comfortable_motion_air_drag = 2.0
+"let g:comfortable_motion_no_default_key_mappings = 1
+"let g:comfortable_motion_impulse_multiplier = 1
+"nnoremap <silent> <C-d> :call comfortable_motion#flick(g:comfortable_motion_impulse_multiplier * winheight(0) * 2)<CR>
+"nnoremap <silent> <C-u> :call comfortable_motion#flick(g:comfortable_motion_impulse_multiplier * winheight(0) * -2)<CR>
+"nnoremap <silent> <C-f> :call comfortable_motion#flick(g:comfortable_motion_impulse_multiplier * winheight(0) * 4)<CR>
+"nnoremap <silent> <C-b> :call comfortable_motion#flick(g:comfortable_motion_impulse_multiplier * winheight(0) * -4)<CR>
 
 
