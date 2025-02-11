@@ -11,6 +11,10 @@ set list              " Set up for displaying tabs explicitly
 set listchars=tab:>-  " Set tab character display
 " If the need occurs for replacing tabs in a file with spaces, use :retab
 
+function GetSyntaxGroup()
+  let syntax_group=synID(line('.'), col('.'), 1)
+  return  synIDattr(syntax_group, 'name')
+endfunction
 
 function GetLineEnding()
   if ( &fileformat == "unix" )
@@ -19,6 +23,7 @@ function GetLineEnding()
     return "CRLF"
   endif
 endfunction
+
 " Statusline config
   set laststatus=2 " Always show status bar
   set statusline=
@@ -28,6 +33,7 @@ endfunction
   set statusline+=%(\ %m%)%(\ %r%) " [modified?] [readonly?]
   " right side
   set statusline+=%=
+  set statusline+=%{GetSyntaxGroup()}%6(%)  " syntax group under cursor
   set statusline+=%(%3l:%c%V\ (%P)%)%6(%) " line:column (xx%)
   set statusline+=0x%02B%6(%)          " current byte under cursor (in hex)
   set statusline+=%([%{&fileencoding?&fileencoding:&encoding}\ %{GetLineEnding()}]%)
