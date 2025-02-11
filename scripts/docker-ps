@@ -1,22 +1,64 @@
 #!/usr/bin/env zsh
+#
+# Argument handling
+#   (see `man getopt /^EXAMPLES`)
+#
+
+getopt --test > /dev/null && true
+if [ $? -ne 4 ]; then
+  echo 'Error: `getopt --test` failed. You need the GNU `getopt`!' >&2
+  exit 69
+fi
+
+LONGOPTS=max-image-length:,machine-output
+OPTIONS=i:q
+
+parsed_args=$(getopt --options=${OPTIONS} --longoptions=${LONGOPTS} --name "$0" -- "$@") || exit 2
+eval set -- "${parsed_args}"
 
 max_image_length=30
+machine_output="false"
+while true; do
+  case "$1" in
+    -i|--max-image-length)
+      max_image_length="$2"
+      shift 2
+      ;;
+    -q|--machine-output)
+      machine_output="true"
+      shift
+      ;;
+    --)
+      shift
+      break
+      ;;
+    *)
+      echo "UNREACHABLE" >&2
+      exit 1337
+      ;;
+  esac
+done
 
+
+#
+# Actual content!
+#
 docker container ps --format "json" | (
-jq \
+  jq \
     --raw-output \
     --null-input \
-    --arg _max_len "${max_image_length}" \
+    --argjson max_len "${max_image_length}" \
+    --argjson machine_output "${machine_output}" \
     --from-file /dev/fd/3 \
     3<<"EOF"
 # begin(EOF)
-  ($_max_len | tonumber) as $MAX_LEN
-  | [inputs 
+  [
+    inputs
     | with_entries(
         if (.key == "Image") then .+{
           value:
-            (if (.value | length > $MAX_LEN)
-              then "...\(.value[-$MAX_LEN:])"
+            (if (.value | length > $max_len)
+              then "...\(.value[-$max_len:])"
               else .value
             end)
         } else null end //
@@ -49,30 +91,37 @@ jq \
       ),
   })
 
-  | if (. | length == 0) then ["-"] else . end
+  # Output formatting
+  | (. | length > 0) as $has_containers
+  | if (($has_containers | not) and ($machine_output | not))
+      then [{ID: "-"}]
+      else .
+    end
   | [
-      { # Pretty-printed column name mapping :-)
-        Command:      "COMMAND",
-        CreatedAt:    "CREATED AT",
-        ID:           "ID",
-        Image:        "IMAGE",
-        Labels:       "LABELS",
-        LocalVolumes: "LOCAL VOLUMES",
-        Mounts:       "MOUNTS",
-        Names:        "NAMES",
-        Networks:     "NETWORKS",
-        Ports:        "PORTS",
-        RunningFor:   "RUNNING FOR",
-        Size:         "SIZE",
-        State:        "STATE",
-        Status:       "STATUS",
-      },
+      (if $machine_output
+        then empty
+        else { # Pretty-printed column name mapping
+          Command:      "COMMAND",
+          CreatedAt:    "CREATED AT",
+          ID:           "ID",
+          Image:        "IMAGE",
+          Labels:       "LABELS",
+          LocalVolumes: "LOCAL VOLUMES",
+          Mounts:       "MOUNTS",
+          Names:        "NAMES",
+          Networks:     "NETWORKS",
+          Ports:        "PORTS",
+          RunningFor:   "RUNNING FOR",
+          Size:         "SIZE",
+          State:        "STATE",
+          Status:       "STATUS",
+        }
+      end),
       .[]
-  ]
+    ]
   | .[]
-  | if (. | type == "string") then [.] else null end //
-    [
-      ._index,
+  | [
+      if ($has_containers and ($machine_output | not)) then (._index) else (empty) end,
       .ID,
       .Names,
       .Status,
