@@ -12,12 +12,11 @@ jq \
 # begin(EOF)
   ($_max_len | tonumber) as $MAX_LEN
   | [inputs 
-    | to_entries
-    | map(
+    | with_entries(
         if (.key == "Image") then .+{
           value:
             (if (.value | length > $MAX_LEN)
-              then "..." + .value[-$MAX_LEN:]
+              then "...\(.value[-$MAX_LEN:])"
               else .value
             end)
         } else null end //
@@ -28,16 +27,28 @@ jq \
             | split(", ")
             | map(.
               | capture("(?<ip>.+):(?<host>[0-9]+)->(?<container>[0-9]+)")
-              | .host + ":" + .container
+              | "(.host):\(.container)"
             )
             | unique
             | join(",")
         } else null end //
         .
      )
-    | from_entries
   ]
   | sort_by(.CreatedAt, .ID)
+
+  # Prepend index to the left in the `_index` field.
+  | (1e-9) as $epsilon
+  | ( ((. | length | log10) + $epsilon) | ceil ) as $num_digits_for_index
+  | to_entries
+  | map(.value + {
+    _index: (
+      ("    ") as $many_spaces
+        | "\($many_spaces)\(.key + 1)"[-$num_digits_for_index:]
+        | "[\(.)]"
+      ),
+  })
+
   | if (. | length == 0) then ["-"] else . end
   | [
       { # Pretty-printed column name mapping :-)
@@ -60,7 +71,13 @@ jq \
   ]
   | .[]
   | if (. | type == "string") then [.] else null end //
-    [.ID, .Names, .Status, .Image]
+    [
+      ._index,
+      .ID,
+      .Names,
+      .Status,
+      .Image
+    ]
   | @tsv
 # end(EOF)
 EOF
