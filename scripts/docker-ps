@@ -121,11 +121,12 @@ docker container ps --format "json" | (
     ]
   | .[]
   | [
-      if ($has_containers and ($machine_output | not)) then (._index) else (empty) end,
+      (if ($has_containers and ($machine_output | not)) then (._index) else (empty) end),
       .ID,
       .Names,
       .Status,
-      .Image
+      .Image,
+      (empty)
     ]
   | @tsv
 # end(EOF)
