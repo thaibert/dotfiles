@@ -1,5 +1,5 @@
 #!/bin/bash
-script_dir="$(dirname "$BASH_SOURCE")"
+script_dir="$(dirname "$(realpath "$BASH_SOURCE")")"
 
 has_color_support="" \
   && test -t 1 \
@@ -49,6 +49,15 @@ esac
 export _OS_TYPE=$machine
 _stdout "OS type determined to be: $_OS_TYPE"
 
+function _stow() {
+  # Force invocations of "stow" to happen from the dotfiles directory.
+  # This is necessary since the .stowrc file placement is non-configurable
+  #   and is hard-coded to be in $PWD/.stowrc
+  (
+    cd $script_dir
+    stow --dir="$script_dir" --target="$HOME" "$@"
+  )
+}
 
 ## Installation and setup
 _PREPEND="[${blue}install${normal}]"
@@ -65,19 +74,19 @@ case "$_OS_TYPE" in
     brew bundle install --no-lock
 
     _stdout "Setting up zsh"
-    stow --no-folding --verbose --dir="$script_dir" --target="$HOME" zsh
+    _stow zsh
     _antigen_zsh=$(find $(brew --prefix)/Cellar/antigen | grep antigen.zsh)
     ln -s -f -v "$_antigen_zsh" "$HOME/.zsh/antigen.zsh"
 
     _stdout "Setting up vim"
-    stow --no-folding --verbose --dir="$script_dir" --target="$HOME" vim
+    _stow vim
 
     _stdout "Setting up tmux"
-    stow --no-folding --verbose --dir="$script_dir" --target="$HOME" tmux
+    _stow tmux
     ln -s -f -v "$HOME/.tmux/paste-mac.sh" "$HOME/.tmux/paste.sh"
 
     _stdout "Setting up alacritty"
-    stow --no-folding --verbose --dir="$script_dir" --target="$HOME" alacritty
+    _stow alacritty
     ln -s -f -v "$HOME/.config/alacritty/alacritty-mac.yml" "$HOME/.config/alacritty/alacritty.yml"
   };;
   wsl*) {
@@ -91,19 +100,19 @@ case "$_OS_TYPE" in
     fi
 
     _stdout "Setting up zsh"
-    stow --no-folding --verbose --dir="$script_dir" --target="$HOME" zsh
+    _stow zsh
     _antigen_zsh="$HOME/.antigen.vendored.zsh"
     ln -s -f -v "$_antigen_zsh" "$HOME/.zsh/antigen.zsh"
 
     _stdout "Setting up vim"
-    stow --no-folding --verbose --dir="$script_dir" --target="$HOME" vim
+    _stow vim
 
     _stdout "Setting up tmux"
-    stow --no-folding --verbose --dir="$script_dir" --target="$HOME" tmux
+    _stow tmux
     ln -s -f -v "$HOME/.tmux/paste-wsl.sh" "$HOME/.tmux/paste.sh"
 
     _stdout "Setting up alacritty"
-    stow --no-folding --verbose --dir="$script_dir" --target="$HOME" alacritty
+    _stow alacritty
     ln -s -f -v "$HOME/.config/alacritty/alacritty-wsl.yml" "$HOME/.config/alacritty/alacritty.yml"
     # TODO: alacritty must be installed manually
   };;
@@ -119,21 +128,21 @@ case "$_OS_TYPE" in
     fi
 
     _stdout "zsh"
-    stow --no-folding --verbose --dir="$script_dir" --target="$HOME" zsh
+    _stow zsh
     _antigen_zsh="$HOME/.antigen.vendored.zsh"
     ln -s -f -v "$_antigen_zsh" "$HOME/.zsh/antigen.zsh"
 
     _stdout "vim"
-    stow --no-folding --verbose --dir="$script_dir" --target="$HOME" vim
+    _stow vim
 
     _stdout "tmux"
-    stow --no-folding --verbose --dir="$script_dir" --target="$HOME" tmux
+    _stow tmux
     sudo dnf install -y xsel
     ln -s -f -v "$HOME/.tmux/paste-linux.sh" "$HOME/.tmux/paste.sh"
 
     _stdout "alacritty"
     sudo dnf install -y alacritty
-    stow --no-folding --verbose --dir="$script_dir" --target="$HOME" alacritty
+    _stow alacritty
     ln -s -f -v "$HOME/.config/alacritty/alacritty-linux.toml" "$HOME/.config/alacritty/alacritty.toml"
   };;
   *) {
