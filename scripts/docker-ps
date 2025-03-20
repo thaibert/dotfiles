@@ -4,15 +4,28 @@
 #   (see `man getopt /^EXAMPLES`)
 #
 
+function print-usage-and-exit() {
+  local original_invocation="$1"
+  printf "Usage:\t${original_invocation} [flags]\n" >&2
+  column --table --separator="@" <<EOF
+@-i <int> | --max-image-length=<int>@Set the max image name length. Default is 30 characters.
+@-q | --machine-output@Strip headers and leading columns s.t. only relevant data is shown.
+@                     @This makes the output more easily awk'able.
+@-h | --help@Print usage of this script.
+EOF
+  exit 0
+}
+
 getopt --test > /dev/null && true
 if [ $? -ne 4 ]; then
   echo 'Error: `getopt --test` failed. You need the GNU `getopt`!' >&2
   exit 69
 fi
 
-LONGOPTS=max-image-length:,machine-output
-OPTIONS=i:q
+LONGOPTS=max-image-length:,machine-output,help
+OPTIONS=i:qh
 
+original_invocation="$0"
 parsed_args=$(getopt --options=${OPTIONS} --longoptions=${LONGOPTS} --name "$0" -- "$@") || exit 2
 eval set -- "${parsed_args}"
 
@@ -26,6 +39,10 @@ while true; do
       ;;
     -q|--machine-output)
       machine_output="true"
+      shift
+      ;;
+    -h|--help)
+      print-usage-and-exit "${original_invocation}"
       shift
       ;;
     --)
