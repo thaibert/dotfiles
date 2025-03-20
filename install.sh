@@ -33,7 +33,7 @@ case "${os}" in
     machine="linux"
     if (grep --quiet --ignore-case "microsoft" /proc/version); then
       machine="wsl"
-    fi 
+    fi
     if (grep --ignore-case "^name=" /etc/os-release | grep --quiet --ignore-case "fedora"); then
       machine="linux-fedora"
     fi
@@ -112,9 +112,24 @@ case "$_OS_TYPE" in
     ln -s -f -v "$HOME/.tmux/paste-wsl.sh" "$HOME/.tmux/paste.sh"
 
     _stdout "Setting up alacritty"
-    _stow alacritty
-    ln -s -f -v "$HOME/.config/alacritty/alacritty-wsl.yml" "$HOME/.config/alacritty/alacritty.yml"
-    # TODO: alacritty must be installed manually
+
+    __alacritty_config_win_dir="C:/Users/$(powershell.exe 'echo $Env:UserName' | dos2unix)/AppData/Roaming/alacritty"
+    __alacritty_config_dotfile_path="//wsl$/${WSL_DISTRO_NAME}${script_dir}/alacritty/.config/alacritty"
+    # TODO: error propagation when invoking powershell...
+    _ps_args=(
+      Start-Process
+      powershell.exe
+      -Verb RunAs
+      -Wait
+      -ArgumentList "'try { New-Item -ItemType SymbolicLink -ErrorAction Stop -Path \"${__alacritty_config_win_dir}\" -Target \"${__alacritty_config_dotfile_path}\" } catch { \$Error[0] | Out-String | Write-Host -ForegroundColor Red -BackgroundColor Black; sleep -Milliseconds \$([int]::MaxValue) }'"
+    )
+    powershell.exe "${_ps_args[@]}"
+
+    # symlinks in wsl2 cannot be accessed in windows, so copy instead...
+    cp -f -v "${script_dir}/alacritty/.config/alacritty/alacritty-wsl.yml" "${script_dir}/alacritty/.config/alacritty/alacritty.yml"
+
+    # TODO: alacritty must still be installed manually
+
   };;
   linux-fedora*) {
     sudo dnf install -y stow
