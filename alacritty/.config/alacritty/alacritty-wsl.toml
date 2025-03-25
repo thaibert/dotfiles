@@ -1,0 +1,18 @@
+[general]
+import = [
+  "theme.toml",
+]
+live_config_reload = false  # https://github.com/alacritty/alacritty/issues/8412
+
+[font]
+size = 13
+
+[terminal.shell]
+program = "wsl"
+args = [ "--cd", "~" ]
+
+[keyboard]
+bindings = [
+  { key = "Space", mods = "Control", chars = "\u0000" },
+]
+
