@@ -17,7 +17,7 @@ _stdout() {
 }
 
 _stderr() {
-  >&2 echo "$_PREPEND $1"
+  >&2 echo "$_PREPEND $red$1$normal"
 }
 
 _error_with_message() {
@@ -87,6 +87,7 @@ case "$_OS_TYPE" in
 
     _stdout "Setting up alacritty"
     _stow alacritty
+    _stderr "WARNING: alacritty with .yml files is deprecated and probably broken at this point. Go fix it!"
     ln -s -f -v "$HOME/.config/alacritty/alacritty-mac.yml" "$HOME/.config/alacritty/alacritty.yml"
   };;
   wsl*) {
@@ -126,9 +127,9 @@ case "$_OS_TYPE" in
     powershell.exe "${_ps_args[@]}"
 
     # symlinks in wsl2 cannot be accessed in windows, so copy instead...
-    cp -f -v "${script_dir}/alacritty/.config/alacritty/alacritty-wsl.yml" "${script_dir}/alacritty/.config/alacritty/alacritty.yml"
+    cp -f -v "${script_dir}/alacritty/.config/alacritty/alacritty-wsl.toml" "${script_dir}/alacritty/.config/alacritty/alacritty.toml"
 
-    # TODO: alacritty must still be installed manually
+    _stderr "TODO: alacritty must still be manually installed in windows"
 
   };;
   linux-fedora*) {
