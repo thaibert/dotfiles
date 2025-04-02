@@ -104,6 +104,7 @@ case "$_OS_TYPE" in
     _stow zsh
     _antigen_zsh="$HOME/.antigen.vendored.zsh"
     ln -s -f -v "$_antigen_zsh" "$HOME/.zsh/antigen.zsh"
+    chsh --shell /bin/zsh
 
     _stdout "Setting up vim"
     _stow vim
