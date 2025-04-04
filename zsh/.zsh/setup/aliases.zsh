@@ -1,2 +1,2 @@
-alias l="ls -lAh" # list, all except . or .., human-readable sizes
+alias l="ls -l --almost-all --human-readable --dereference-command-line-symlink-to-dir" # list, all except . or .., human-readable sizes
 
