@@ -1,4 +1,8 @@
 #!/bin/bash
+set -o pipefail
+set -o errexit
+set -o nounset
+
 script_dir="$(dirname "$(realpath "$BASH_SOURCE")")"
 
 has_color_support="" \
@@ -13,15 +17,15 @@ blue="${has_color_support:+$(tput setaf 4)}"
 
 _PREPEND="[${blue}init${normal}]"
 _stdout() {
-  echo "$_PREPEND $1"
+  echo "$_PREPEND ${@}"
 }
 
 _stderr() {
-  >&2 echo "$_PREPEND $red$1$normal"
+  >&2 echo "$_PREPEND ${red}${@}${normal}"
 }
 
 _error_with_message() {
-  _stderr "${red}Error during environment setup: $1${normal}"
+  _stderr "${red}Error during environment setup: ${@}${normal}"
   exit 1
 }
 
@@ -64,6 +68,11 @@ _PREPEND="[${blue}install${normal}]"
 _stdout "Starting installation"
 case "$_OS_TYPE" in
   mac*) {
+    _stderr "TODO: ensure that strict bash error handling is done"
+    set +o pipefail
+    set +o errexit
+    set +o nounset
+
     _stdout "Ensuring homebrew is installed"
     brew --version
     if [[ $? != 0 ]]; then
@@ -91,11 +100,10 @@ case "$_OS_TYPE" in
     ln -s -f -v "$HOME/.config/alacritty/alacritty-mac.yml" "$HOME/.config/alacritty/alacritty.yml"
   };;
   wsl*) {
-    sudo apt-get install -y stow
+    sudo apt update
+    sudo apt install -y stow
+
     wget -q -O "$HOME/.antigen.vendored.zsh" "https://raw.githubusercontent.com/zsh-users/antigen/develop/bin/antigen.zsh"  # TODO: Debian's zsh-antigen package is broken, so vendor it in manually
-    mkdir -p "$HOME/.config/alacritty"
-    mkdir "$HOME/.tmux" 2>/dev/null
-    mkdir "$HOME/.zsh" 2>/dev/null
     if [ -f "$HOME/.zshrc" ]; then
       mv "$HOME/.zshrc" "$HOME/.old_zshrc"
     fi
@@ -104,28 +112,43 @@ case "$_OS_TYPE" in
     _stow zsh
     _antigen_zsh="$HOME/.antigen.vendored.zsh"
     ln -s -f -v "$_antigen_zsh" "$HOME/.zsh/antigen.zsh"
-    chsh --shell /bin/zsh
+    sudo apt install -y zsh
+    current_shell="$(getent passwd $(whoami) | awk -F ":" '{print $NF}')"
+    if [[ ! "/bin/zsh" = "${current_shell}" ]]; then
+      _stdout "Changing shell to zsh..."
+      chsh --shell /bin/zsh
+    fi
 
     _stdout "Setting up vim"
+    sudo apt install -y vim
     _stow vim
 
     _stdout "Setting up tmux"
+    sudo apt install -y tmux
     _stow tmux
     ln -s -f -v "$HOME/.tmux/paste-wsl.sh" "$HOME/.tmux/paste.sh"
 
     _stdout "Setting up alacritty"
-
+    sudo apt install -y dos2unix
     __alacritty_config_win_dir="C:/Users/$(powershell.exe 'echo $Env:UserName' | dos2unix)/AppData/Roaming/alacritty"
     __alacritty_config_dotfile_path="//wsl$/${WSL_DISTRO_NAME}${script_dir}/alacritty/.config/alacritty"
-    # TODO: error propagation when invoking powershell...
-    _ps_args=(
-      Start-Process
-      powershell.exe
-      -Verb RunAs
-      -Wait
-      -ArgumentList "'try { New-Item -ItemType SymbolicLink -ErrorAction Stop -Path \"${__alacritty_config_win_dir}\" -Target \"${__alacritty_config_dotfile_path}\" } catch { \$Error[0] | Out-String | Write-Host -ForegroundColor Red -BackgroundColor Black; sleep -Milliseconds \$([int]::MaxValue) }'"
-    )
-    powershell.exe "${_ps_args[@]}"
+    if read -r -d '' raw_command <<EOF ; then true; else if [ $? = 1 ]; then true; else echo "Unexpected exit code from read ($?)"; exit $?; fi; fi;
+      try {
+        \$is_already_symlinked = "SymbolicLink" -eq (Get-Item "${__alacritty_config_win_dir}" -ErrorAction SilentlyContinue).LinkType;
+        if (\$is_already_symlinked) { return 0 };
+
+        if (Get-Item "${__alacritty_config_win_dir}" -ErrorAction SilentlyContinue) { Remove-Item -Recurse -Force "${__alacritty_config_win_dir}" };
+
+        New-Item -ItemType SymbolicLink -ErrorAction Stop -Path "${__alacritty_config_win_dir}" -Target "${__alacritty_config_dotfile_path}";
+      } catch {
+        \$Error[0] | Out-String | Write-Host -ForegroundColor Red -BackgroundColor Black;
+        sleep -Milliseconds \$([int]::MaxValue)
+      }
+
+EOF
+    encoded_command="$(echo "${raw_command}" | iconv -f utf-8 -t utf-16le | base64)"
+    _stdout "invoking powershell with encoded command ${encoded_command}"
+    powershell.exe Start-Process powershell.exe -Verb RunAs -ArgumentList \'-EncodedCommand \""${encoded_command}"\"\'
 
     # symlinks in wsl2 cannot be accessed in windows, so copy instead...
     cp -f -v "${script_dir}/alacritty/.config/alacritty/alacritty-wsl.toml" "${script_dir}/alacritty/.config/alacritty/alacritty.toml"
@@ -134,12 +157,13 @@ case "$_OS_TYPE" in
 
   };;
   linux-fedora*) {
+    _stderr "TODO: ensure that strict bash error handling is done"
+    set +o pipefail
+    set +o errexit
+    set +o nounset
     sudo dnf install -y stow
 
     wget -q -O "$HOME/.antigen.vendored.zsh" "https://raw.githubusercontent.com/zsh-users/antigen/develop/bin/antigen.zsh"  # TODO: dnf does not have an antigen package, so vendor it in manually
-    mkdir -p "$HOME/.config/alacritty"
-    mkdir "$HOME/.tmux" 2>/dev/null
-    mkdir "$HOME/.zsh" 2>/dev/null
     if [ -f "$HOME/.zshrc" ]; then
       mv "$HOME/.zshrc" "$HOME/.old_zshrc"
     fi
