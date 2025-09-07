@@ -172,6 +172,11 @@ EOF
     _stow zsh
     _antigen_zsh="$HOME/.antigen.vendored.zsh"
     ln -s -f -v "$_antigen_zsh" "$HOME/.zsh/antigen.zsh"
+    current_shell="$(getent passwd $(whoami) | awk -F ":" '{print $NF}')"
+    if [[ ! "/bin/zsh" = "${current_shell}" ]]; then
+      _stdout "Changing shell to zsh..."
+      chsh --shell /bin/zsh
+    fi
 
     _stdout "vim"
     _stow vim

@@ -65,6 +65,8 @@ call plug#begin()
 "  Plug 'yuttie/comfortable-motion.vim'
   Plug 'inkarkat/vim-ingo-library'
   Plug 'inkarkat/vim-ShowTrailingWhitespace'
+  Plug 'tpope/vim-fugitive'
+  Plug 'blueyed/vim-diminactive'
 call plug#end()
 
 
