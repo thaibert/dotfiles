@@ -163,6 +163,7 @@ EOF
     set +o nounset
     sudo dnf install -y stow
 
+    sudo dnf install -y zsh
     wget -q -O "$HOME/.antigen.vendored.zsh" "https://raw.githubusercontent.com/zsh-users/antigen/develop/bin/antigen.zsh"  # TODO: dnf does not have an antigen package, so vendor it in manually
     if [ -f "$HOME/.zshrc" ]; then
       mv "$HOME/.zshrc" "$HOME/.old_zshrc"
@@ -187,7 +188,7 @@ EOF
     ln -s -f -v "$HOME/.tmux/paste-linux.sh" "$HOME/.tmux/paste.sh"
 
     _stdout "alacritty"
-    sudo dnf install -y alacritty
+    sudo dnf install -y alacritty cascadia-mono-fonts
     _stow alacritty
     ln -s -f -v "$HOME/.config/alacritty/alacritty-linux.toml" "$HOME/.config/alacritty/alacritty.toml"
   };;
