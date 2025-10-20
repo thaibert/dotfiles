@@ -3,7 +3,7 @@ syntax match conventional_type                    "\k\+\((\)\@=" nextgroup=conve
 syntax match conventional_scope_start "("     nextgroup=conventional_scope     contained
 syntax match conventional_scope       "[^)]*" nextgroup=conventional_scope_end contained
 syntax match conventional_scope_end   "):"    nextgroup=conventional_subject   contained skipwhite
-syntax match conventional_subject         ".\{1,20}" contained nextgroup=conventional_subject_overrun
+syntax match conventional_subject         ".\{1,60}" contained nextgroup=conventional_subject_overrun
 syntax match conventional_subject_overrun ".*"       contained
 
 highlight default link conventional_type_startingwhitespace QuickFixLine
