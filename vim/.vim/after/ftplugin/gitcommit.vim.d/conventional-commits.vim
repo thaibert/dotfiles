@@ -2,7 +2,7 @@ syntax match conventional_type_startingwhitespace "^\s*"         nextgroup=conve
 syntax match conventional_type                    "\k\+\((\)\@=" nextgroup=conventional_scope_start contained
 syntax match conventional_scope_start "("     nextgroup=conventional_scope     contained
 syntax match conventional_scope       "[^)]*" nextgroup=conventional_scope_end contained
-syntax match conventional_scope_end   "):"    nextgroup=conventional_subject   contained skipwhite
+syntax match conventional_scope_end   "):[[:space:]]*"    nextgroup=conventional_subject   contained skipwhite
 syntax match conventional_subject         ".\{1,60}" contained nextgroup=conventional_subject_overrun
 syntax match conventional_subject_overrun ".*"       contained
 
